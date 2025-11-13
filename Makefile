@@ -7,7 +7,7 @@ lint-golangci:
 
 .PHONY: test
 test:
-	go test -v ./... -coverprofile=coverage.out
+	go test -v ./...
 
 .PHONY: build
 build:
