@@ -1,0 +1,4 @@
+key: value
+num: 42
+nested:
+  flag: true
