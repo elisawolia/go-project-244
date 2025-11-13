@@ -30,6 +30,25 @@ func TestGenDiff_JSONFlat(t *testing.T) {
 	require.Equal(t, expected, actual)
 }
 
+func TestGenDiff_YAMLFlat(t *testing.T) {
+	path1 := fixturePath("file1.yaml")
+	path2 := fixturePath("file2.yaml")
+
+	actual, err := GenDiff(path1, path2)
+	require.NoError(t, err)
+
+	expected := `{
+  - follow: false
+    host: hexlet.io
+  - proxy: 123.234.53.22
+  - timeout: 50
+  + timeout: 20
+  + verbose: true
+}`
+
+	require.Equal(t, expected, actual)
+}
+
 func TestGenDiff_FileNotFound(t *testing.T) {
 	path1 := fixturePath("simple1.json")
 	path2 := fixturePath("does-not-exist.json")
