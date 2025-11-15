@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 
 	"gopkg.in/yaml.v3"
@@ -64,19 +63,19 @@ func parseYAML(b []byte) (map[string]interface{}, error) {
 }
 
 func normalizeRoot(raw interface{}) (map[string]interface{}, error) {
-	if m, ok := utils.ToMap(raw); ok {
-		return m, nil
+	if m, ok := utils.ToComplexStruct(raw); ok {
+		if res, ok2 := m.(map[string]interface{}); ok2 {
+			return res, nil
+		}
 	}
-
-	if s, ok := raw.([]interface{}); ok {
-		res := make(map[string]interface{}, len(s))
-		for i, v := range s {
-			res[strconv.Itoa(i)] = v
+	if slice, ok := raw.([]interface{}); ok {
+		res := make(map[string]interface{}, len(slice))
+		for i, v := range slice {
+			key := fmt.Sprintf("%d", i)
+			res[key] = v
 		}
 		return res, nil
 	}
 
-	return map[string]interface{}{
-		"__root__": raw,
-	}, nil
+	return nil, fmt.Errorf("unsupported root type %T", raw)
 }
