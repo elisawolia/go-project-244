@@ -13,6 +13,7 @@ import (
 
 const indentSize = 4
 const signOffset = 2
+const printPattern = "%s%s: %s\n"
 
 func formatStylish(tree []model.Node) string {
 	var b strings.Builder
@@ -35,21 +36,21 @@ func formatNodes(nodes []model.Node, depth int) string {
 
 		case model.NodeUnchanged:
 			indent := makeIndent(depth, ' ')
-			fmt.Fprintf(&b, "%s%s: %s\n", indent, n.Key, formatValue(n.Value, depth))
+			fmt.Fprintf(&b, printPattern, indent, n.Key, formatValue(n.Value, depth))
 
 		case model.NodeAdded:
 			indent := makeIndent(depth, '+')
-			fmt.Fprintf(&b, "%s%s: %s\n", indent, n.Key, formatValue(n.Value, depth))
+			fmt.Fprintf(&b, printPattern, indent, n.Key, formatValue(n.Value, depth))
 
 		case model.NodeRemoved:
 			indent := makeIndent(depth, '-')
-			fmt.Fprintf(&b, "%s%s: %s\n", indent, n.Key, formatValue(n.Value, depth))
+			fmt.Fprintf(&b, printPattern, indent, n.Key, formatValue(n.Value, depth))
 
 		case model.NodeUpdated:
 			indentOld := makeIndent(depth, '-')
 			indentNew := makeIndent(depth, '+')
-			fmt.Fprintf(&b, "%s%s: %s\n", indentOld, n.Key, formatValue(n.OldValue, depth))
-			fmt.Fprintf(&b, "%s%s: %s\n", indentNew, n.Key, formatValue(n.NewValue, depth))
+			fmt.Fprintf(&b, printPattern, indentOld, n.Key, formatValue(n.OldValue, depth))
+			fmt.Fprintf(&b, printPattern, indentNew, n.Key, formatValue(n.NewValue, depth))
 		}
 	}
 
@@ -104,7 +105,7 @@ func formatMap(m map[string]interface{}, depth int) string {
 	for _, key := range keys {
 		val := m[key]
 		indent := strings.Repeat(" ", depth*indentSize)
-		fmt.Fprintf(&b, "%s%s: %s\n", indent, key, formatValue(val, depth))
+		fmt.Fprintf(&b, printPattern, indent, key, formatValue(val, depth))
 	}
 	fmt.Fprintf(&b, "%s}", strings.Repeat(" ", (depth-1)*indentSize))
 
