@@ -60,7 +60,7 @@ func TestGenDiff_JSONFlat(t *testing.T) {
 	path1 := fixturePath("file1.json")
 	path2 := fixturePath("file2.json")
 
-	actual, err := GenDiff(path1, path2)
+	actual, err := GenDiff(path1, path2, "stylish")
 	require.NoError(t, err)
 
 	expected := `{
@@ -79,7 +79,7 @@ func TestGenDiff_YAMLFlat(t *testing.T) {
 	path1 := fixturePath("file1.yaml")
 	path2 := fixturePath("file2.yaml")
 
-	actual, err := GenDiff(path1, path2)
+	actual, err := GenDiff(path1, path2, "stylish")
 	require.NoError(t, err)
 
 	expected := `{
@@ -98,7 +98,7 @@ func TestGenDiffStylishJSONested(t *testing.T) {
 	path1 := fixturePath("file_hard1.json")
 	path2 := fixturePath("file_hard2.json")
 
-	got, err := GenDiff(path1, path2)
+	got, err := GenDiff(path1, path2, "stylish")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -112,6 +112,6 @@ func TestGenDiff_FileNotFound(t *testing.T) {
 	path1 := fixturePath("simple1.json")
 	path2 := fixturePath("does-not-exist.json")
 
-	_, err := GenDiff(path1, path2)
+	_, err := GenDiff(path1, path2, "stylish")
 	require.Error(t, err)
 }

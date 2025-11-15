@@ -3,7 +3,7 @@ lint: lint-golangci
 
 .PHONY: lint-golangci
 lint-golangci:
-	golangci-lint run
+	golangci-lint run -E cyclop
 
 .PHONY: test
 test:

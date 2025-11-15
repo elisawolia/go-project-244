@@ -32,7 +32,8 @@ func main() {
 			filepath1 := c.Args().Get(0)
 			filepath2 := c.Args().Get(1)
 
-			result, err := code.GenDiff(filepath1, filepath2)
+			format := c.String("format")
+			result, err := code.GenDiff(filepath1, filepath2, format)
 			if err != nil {
 				return err
 			}

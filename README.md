@@ -10,4 +10,4 @@
 
 ## Демо работы с проектом
 
-[![asciicast](https://asciinema.org/a/rRPKlzpR8vukQRZzsL1h8jOVd.png)](https://asciinema.org/a/rRPKlzpR8vukQRZzsL1h8jOVd)
+[![asciicast](https://asciinema.org/a/57kudd7UR2hhtZ6bGa30VCPeF.png)](https://asciinema.org/a/57kudd7UR2hhtZ6bGa30VCPeF)
