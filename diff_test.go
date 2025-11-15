@@ -8,6 +8,22 @@ import (
 )
 
 const expectedStylish = `{
+  - array: [
+        {
+            abc: 12345
+            deep: {
+                id: 45
+            }
+        }
+    ]
+  + array: [
+        {
+            abc: 123450
+            deep: {
+                id: 45
+            }
+        }
+    ]
     common: {
       + follow: false
         setting1: Value 1

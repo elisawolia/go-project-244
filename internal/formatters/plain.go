@@ -49,7 +49,7 @@ func buildPlainLines(nodes []model.Node, parentPath string) []string {
 }
 
 func plainFormatValue(v interface{}) string {
-	if _, ok := utils.ToMap(v); ok {
+	if _, ok := utils.ToComplexStruct(v); ok {
 		return "[complex value]"
 	}
 

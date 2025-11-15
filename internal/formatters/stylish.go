@@ -66,10 +66,30 @@ func makeIndent(depth int, sign rune) string {
 }
 
 func formatValue(v interface{}, depth int) string {
-	if m, ok := utils.ToMap(v); ok {
-		return formatMap(m, depth+1)
+	if complexStr, ok := tryFormatComplex(v, depth); ok {
+		return complexStr
 	}
 
+	return formatPrimitive(v)
+}
+
+func tryFormatComplex(v interface{}, depth int) (string, bool) {
+	complexVal, ok := utils.ToComplexStruct(v)
+	if !ok {
+		return "", false
+	}
+
+	switch val := complexVal.(type) {
+	case map[string]interface{}:
+		return formatMap(val, depth+1), true
+	case []interface{}:
+		return formatSlice(val, depth+1), true
+	default:
+		return "", false
+	}
+}
+
+func formatPrimitive(v interface{}) string {
 	switch val := v.(type) {
 	case string:
 		return val
@@ -108,6 +128,28 @@ func formatMap(m map[string]interface{}, depth int) string {
 		fmt.Fprintf(&b, printPattern, indent, key, formatValue(val, depth))
 	}
 	fmt.Fprintf(&b, "%s}", strings.Repeat(" ", (depth-1)*indentSize))
+
+	return b.String()
+}
+
+func formatSlice(s []interface{}, depth int) string {
+	var b strings.Builder
+
+	indent := strings.Repeat(" ", depth*indentSize)
+	closingIndent := strings.Repeat(" ", (depth-1)*indentSize)
+
+	b.WriteString("[\n")
+	for i, item := range s {
+		fmt.Fprintf(&b, "%s%s", indent, formatValue(item, depth))
+		if i < len(s)-1 {
+			b.WriteString("\n")
+		}
+	}
+	if len(s) > 0 {
+		b.WriteString("\n")
+	}
+	b.WriteString(closingIndent)
+	b.WriteString("]")
 
 	return b.String()
 }

@@ -312,7 +312,10 @@ func TestFormatStylish_Tree(t *testing.T) {
       + complexMap: {
             a: 1
         }
-      + complexList: [1 2]
+      + complexList: [
+            1
+            2
+        ]
         unchangedInside: noop
     }
   + flag: true

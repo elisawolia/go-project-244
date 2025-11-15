@@ -3,11 +3,27 @@ package utils
 import "fmt"
 
 func ToMap(v interface{}) (map[string]interface{}, bool) {
+	complex, ok := ToComplexStruct(v)
+	if !ok {
+		return nil, false
+	}
+
+	m, ok := complex.(map[string]interface{})
+	if !ok {
+		return nil, false
+	}
+
+	return m, true
+}
+
+func ToComplexStruct(v interface{}) (interface{}, bool) {
 	switch m := v.(type) {
 	case map[string]interface{}:
 		return convertStringMap(m), true
 	case map[interface{}]interface{}:
 		return convertInterfaceMap(m), true
+	case []interface{}:
+		return convertSlice(m), true
 	default:
 		return nil, false
 	}
@@ -29,6 +45,14 @@ func convertInterfaceMap(m map[interface{}]interface{}) map[string]interface{} {
 			keyStr = fmt.Sprint(k)
 		}
 		res[keyStr] = convertValue(val)
+	}
+	return res
+}
+
+func convertSlice(s []interface{}) []interface{} {
+	res := make([]interface{}, len(s))
+	for i, val := range s {
+		res[i] = convertValue(val)
 	}
 	return res
 }
