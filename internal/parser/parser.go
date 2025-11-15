@@ -5,9 +5,12 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"gopkg.in/yaml.v3"
+
+	"code/internal/utils"
 )
 
 func Parse(path string) (map[string]interface{}, error) {
@@ -45,17 +48,35 @@ func detectFormat(path string) string {
 }
 
 func parseJSON(b []byte) (map[string]interface{}, error) {
-	var result map[string]interface{}
-	if err := json.Unmarshal(b, &result); err != nil {
+	var raw interface{}
+	if err := json.Unmarshal(b, &raw); err != nil {
 		return nil, fmt.Errorf("invalid json: %w", err)
 	}
-	return result, nil
+	return normalizeRoot(raw)
 }
 
 func parseYAML(b []byte) (map[string]interface{}, error) {
-	var result map[string]interface{}
-	if err := yaml.Unmarshal(b, &result); err != nil {
+	var raw interface{}
+	if err := yaml.Unmarshal(b, &raw); err != nil {
 		return nil, fmt.Errorf("invalid yaml: %w", err)
 	}
-	return result, nil
+	return normalizeRoot(raw)
+}
+
+func normalizeRoot(raw interface{}) (map[string]interface{}, error) {
+	if m, ok := utils.ToMap(raw); ok {
+		return m, nil
+	}
+
+	if s, ok := raw.([]interface{}); ok {
+		res := make(map[string]interface{}, len(s))
+		for i, v := range s {
+			res[strconv.Itoa(i)] = v
+		}
+		return res, nil
+	}
+
+	return map[string]interface{}{
+		"__root__": raw,
+	}, nil
 }
