@@ -8,8 +8,6 @@ import (
 	"strings"
 
 	"gopkg.in/yaml.v3"
-
-	"code/internal/utils"
 )
 
 func Parse(path string) (map[string]interface{}, error) {
@@ -47,35 +45,17 @@ func detectFormat(path string) string {
 }
 
 func parseJSON(b []byte) (map[string]interface{}, error) {
-	var raw interface{}
-	if err := json.Unmarshal(b, &raw); err != nil {
+	var result map[string]interface{}
+	if err := json.Unmarshal(b, &result); err != nil {
 		return nil, fmt.Errorf("invalid json: %w", err)
 	}
-	return normalizeRoot(raw)
+	return result, nil
 }
 
 func parseYAML(b []byte) (map[string]interface{}, error) {
-	var raw interface{}
-	if err := yaml.Unmarshal(b, &raw); err != nil {
+	var result map[string]interface{}
+	if err := yaml.Unmarshal(b, &result); err != nil {
 		return nil, fmt.Errorf("invalid yaml: %w", err)
 	}
-	return normalizeRoot(raw)
-}
-
-func normalizeRoot(raw interface{}) (map[string]interface{}, error) {
-	if m, ok := utils.ToComplexStruct(raw); ok {
-		if res, ok2 := m.(map[string]interface{}); ok2 {
-			return res, nil
-		}
-	}
-	if slice, ok := raw.([]interface{}); ok {
-		res := make(map[string]interface{}, len(slice))
-		for i, v := range slice {
-			key := fmt.Sprintf("%d", i)
-			res[key] = v
-		}
-		return res, nil
-	}
-
-	return nil, fmt.Errorf("unsupported root type %T", raw)
+	return result, nil
 }
